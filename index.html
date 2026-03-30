@@ -35,12 +35,10 @@
   #bg {
     position: fixed;
     inset: 0;
-    background: #ffffff;
-    /* Troque por: background: url('./img/menu_bg.png') center/cover no-repeat; */
+    background-image: url(img/video.mp4);
     z-index: 0;
   }
 
-  /* pixel checkerboard hint */
   #bg::after {
     content: '';
     position: absolute;
@@ -66,7 +64,6 @@
     gap: 0;
   }
 
-  /* Title */
   .game-title {
     font-size: clamp(24px, 5vw, 52px);
     color: var(--gold);
@@ -86,7 +83,6 @@
     50% { transform: translateY(-8px); }
   }
 
-  /* Menu item wrapper */
   .menu-list {
     display: flex;
     flex-direction: column;
@@ -95,7 +91,6 @@
     position: relative;
   }
 
-  /* Cursor arrow */
   .cursor {
     position: absolute;
     left: -36px;
@@ -107,7 +102,6 @@
     top: 10px;
   }
 
-  /* Stone pixel button */
   .menu-btn {
     position: relative;
     background: var(--stone);
@@ -120,7 +114,6 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     image-rendering: pixelated;
-    /* pixel border illusion */
     box-shadow:
       inset -4px -4px 0 var(--stone-dark),
       inset 4px 4px 0 var(--stone-light),
@@ -264,7 +257,6 @@
     letter-spacing: 2px;
   }
 
-  /* Controls display */
   .controls-grid {
     display: flex;
     gap: 32px;
@@ -307,7 +299,6 @@
     line-height: 1.8;
   }
 
-  /* Powerups grid */
   .powerups-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -344,17 +335,6 @@
     image-rendering: pixelated;
   }
 
-  /* animated sprite cycling */
-  .powerup-img.animated img {
-    animation: spriteFlip 0.8s steps(1) infinite;
-  }
-
-  @keyframes spriteFlip {
-    0%   { opacity: 1; }
-    50%  { opacity: 0; }
-    51%  { opacity: 1; }
-  }
-
   .powerup-name {
     font-size: clamp(6px, 1vw, 8px);
     color: var(--gold);
@@ -369,7 +349,6 @@
     line-height: 1.8;
   }
 
-  /* Enemies / Boss row */
   .entity-row {
     display: flex;
     gap: 20px;
@@ -500,7 +479,6 @@
     transition: width 0.3s steps(8);
   }
 
-  /* pixel scanlines on loading */
   #loading-screen::after {
     content: '';
     position: fixed;
@@ -521,7 +499,6 @@
     letter-spacing: 2px;
   }
 
-  /* scanlines on menu too */
   #menu::before {
     content: '';
     position: fixed;
@@ -533,13 +510,420 @@
     pointer-events: none;
     z-index: 1;
   }
+
+  /* ══════════════════════════════════════
+     ── SOBRE O CRIADOR SCREEN ──
+  ══════════════════════════════════════ */
+  #sobre-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0f131e;
+    z-index: 200;
+    overflow-y: auto;
+    padding: 40px 20px 60px;
+    animation: fadeIn 0.2s ease;
+  }
+  #sobre-screen.active { display: block; }
+
+  /* scanlines overlay */
+  #sobre-screen::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .sobre-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .sobre-titulo {
+    font-size: clamp(12px, 2.5vw, 18px);
+    color: var(--gold);
+    text-shadow: 3px 3px 0 var(--gold-dark), 6px 6px 0 #000;
+    text-align: center;
+    margin-bottom: 40px;
+    letter-spacing: 3px;
+    animation: titleBounce 2s ease-in-out infinite;
+  }
+
+  /* ─ TOP CARD: foto rosto + dados ─ */
+  .sobre-top {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  /* quadro da foto do rosto */
+  .foto-rosto-wrap {
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .foto-rosto-frame {
+    width: 160px;
+    height: 160px;
+    background: #1e2538;
+    border: 4px solid var(--stone-shadow);
+    box-shadow:
+      inset -4px -4px 0 #0a0d14,
+      inset 4px 4px 0 #2e3550,
+      6px 6px 0 #000,
+      0 0 0 4px #000;
+    overflow: hidden;
+    image-rendering: pixelated;
+    position: relative;
+  }
+
+  .foto-rosto-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    display: block;
+  }
+
+  /* placeholder quando não tem imagem */
+  .foto-rosto-frame .placeholder-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #4a5268;
+    font-size: 6px;
+    text-align: center;
+    padding: 8px;
+    line-height: 2;
+  }
+
+  .foto-label {
+    font-size: 6px;
+    color: #4a5268;
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* card de dados do criador */
+  .sobre-dados {
+    flex: 1;
+    min-width: 220px;
+    background: #1a2030;
+    border: 3px solid var(--stone-shadow);
+    box-shadow: 4px 4px 0 #000, 0 0 0 3px #000;
+    padding: 20px 24px;
+  }
+
+  .dados-nome {
+    font-size: clamp(10px, 2vw, 15px);
+    color: var(--gold);
+    text-shadow: 2px 2px 0 var(--gold-dark);
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+  }
+
+  .dados-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .dados-tag {
+    font-size: clamp(5px, 0.85vw, 7px);
+    color: var(--gold-dark);
+    background: #0f131e;
+    border: 2px solid #2a3040;
+    padding: 4px 8px;
+    flex-shrink: 0;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .dados-val {
+    font-size: clamp(5px, 0.85vw, 7px);
+    color: #c0c8d8;
+    line-height: 2;
+    letter-spacing: 1px;
+  }
+
+  /* professor destaque */
+  .professor-card {
+    background: #1a2030;
+    border: 3px solid var(--stone-shadow);
+    box-shadow: 4px 4px 0 #000, 0 0 0 3px #000;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .prof-icon {
+    width: 48px;
+    height: 48px;
+    background: #2a3040;
+    border: 3px solid #4a5060;
+    box-shadow: 3px 3px 0 #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    image-rendering: pixelated;
+  }
+
+  .prof-info { flex: 1; }
+
+  .prof-label {
+    font-size: clamp(5px, 0.8vw, 7px);
+    color: var(--gold-dark);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .prof-nome {
+    font-size: clamp(7px, 1.3vw, 10px);
+    color: var(--white);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .prof-materia {
+    font-size: clamp(5px, 0.85vw, 7px);
+    color: #8090a8;
+    letter-spacing: 1px;
+    line-height: 1.8;
+  }
+
+  /* ─ LINHA COM IMAGEM CORPO + VERSÍCULO ─ */
+  .sobre-mid {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  /* foto corpo inteiro */
+  .foto-corpo-frame {
+    width: 130px;
+    flex-shrink: 0;
+    background: #1e2538;
+    border: 4px solid var(--stone-shadow);
+    box-shadow:
+      inset -4px -4px 0 #0a0d14,
+      inset 4px 4px 0 #2e3550,
+      6px 6px 0 #000,
+      0 0 0 4px #000;
+    overflow: hidden;
+    image-rendering: pixelated;
+    min-height: 220px;
+    position: relative;
+  }
+
+  .foto-corpo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    image-rendering: pixelated;
+    display: block;
+  }
+
+  .foto-corpo-frame .placeholder-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #4a5268;
+    font-size: 6px;
+    text-align: center;
+    padding: 8px;
+    line-height: 2;
+  }
+
+  /* versículo */
+  .versiculo-card {
+    flex: 1;
+    min-width: 200px;
+    background: #1a2030;
+    border: 3px solid var(--stone-shadow);
+    box-shadow: 4px 4px 0 #000, 0 0 0 3px #000;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .versiculo-header {
+    font-size: clamp(6px, 1vw, 8px);
+    color: var(--gold);
+    letter-spacing: 2px;
+    border-bottom: 3px solid var(--gold-dark);
+    padding-bottom: 8px;
+  }
+
+  .versiculo-texto {
+    font-size: clamp(6px, 1vw, 8px);
+    color: #c0c8d8;
+    line-height: 2.4;
+    font-style: italic;
+    letter-spacing: 1px;
+  }
+
+  .versiculo-ref {
+    font-size: clamp(5px, 0.8vw, 7px);
+    color: var(--gold-dark);
+    text-align: right;
+    letter-spacing: 1px;
+  }
+
+  /* ─ REDES SOCIAIS ─ */
+  .redes-section {
+    margin-bottom: 28px;
+  }
+
+  .redes-grid {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .rede-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #1a2030;
+    border: 3px solid var(--stone-shadow);
+    box-shadow: 4px 4px 0 #000, 0 0 0 3px #000;
+    padding: 14px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.05s, box-shadow 0.05s;
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .rede-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000, 0 0 0 3px #000;
+  }
+
+  .rede-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 3px #000;
+  }
+
+  .rede-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rede-icon svg {
+    width: 28px;
+    height: 28px;
+    image-rendering: pixelated;
+  }
+
+  .rede-info { flex: 1; }
+
+  .rede-nome {
+    font-size: clamp(6px, 1vw, 8px);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .rede-handle {
+    font-size: clamp(5px, 0.8vw, 7px);
+    color: #8090a8;
+    letter-spacing: 1px;
+  }
+
+  .rede-github  .rede-nome { color: #e0e0e0; }
+  .rede-insta   .rede-nome { color: #e1306c; }
+  .rede-whats   .rede-nome { color: #25d366; }
+
+  /* pixel-style social icons */
+  .icon-github { fill: #e0e0e0; }
+  .icon-insta  { fill: #e1306c; }
+  .icon-whats  { fill: #25d366; }
+
+  /* back button */
+  .sobre-back {
+    display: block;
+    margin: 8px auto 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 1.3vw, 11px);
+    padding: 14px 32px;
+    background: var(--stone);
+    color: var(--stone-shadow);
+    border: none;
+    cursor: pointer;
+    box-shadow: inset -3px -3px 0 var(--stone-dark), 3px 3px 0 #000, 0 0 0 3px #000;
+    letter-spacing: 1px;
+  }
+  .sobre-back:hover { background: var(--stone-light); }
+  .sobre-back:active { transform: translate(3px,3px); box-shadow: 0 0 0 3px #000; }
+  /* ── BACKGROUND ── */
+  #bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: #000; 
+  }
+
+  #video-fundo {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; 
+    display: block;
+  }
+
+  #bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none; 
+    background-image:
+      linear-gradient(45deg, rgba(0,0,0,0.03) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(0,0,0,0.03) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.03) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.03) 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+    z-index: 1; 
+  }
 </style>
 </head>
 <body>
 
-<!-- BACKGROUND -->
-<div id="bg"></div>
-
+  <div id="bg">
+    <video autoplay muted loop playsinline id="video-fundo">
+      <source src="img/video.mp4" type="video/mp4">
+    </video>
+  </div>
 <!-- ═══════════════════ MAIN MENU ═══════════════════ -->
 <div id="menu">
   <div class="game-title">GAME</div>
@@ -553,7 +937,7 @@
     <button class="menu-btn" data-index="1" onclick="selectBtn(1); openModal('controles-modal')">
       CONTROLES
     </button>
-    <button class="menu-btn" data-index="2" onclick="selectBtn(2); openModal('sobre-modal')">
+    <button class="menu-btn" data-index="2" onclick="selectBtn(2); openSobre()">
       SOBRE O CRIADOR
     </button>
   </div>
@@ -583,115 +967,82 @@
   </div>
 </div>
 
-<!-- ═══════════════════ MODAL: SOBRE ═══════════════════ -->
-<div class="overlay" id="sobre-modal">
-  <div class="modal">
-    <h2>👤 SOBRE O CRIADOR</h2>
-    <p>Em breve...</p>
-    <div class="modal-btns">
-      <button class="btn-back" onclick="closeModal('sobre-modal')">VOLTAR</button>
-    </div>
-  </div>
-</div>
-
 <!-- ═══════════════════ MANUAL SCREEN ═══════════════════ -->
 <div id="manual-screen">
   <div class="manual-inner">
     <div class="manual-title">📖 MANUAL DO JOGO</div>
 
-    <!-- CONTROLS SECTION -->
     <div class="manual-section">
       <div class="section-label">🎮 CONTROLES</div>
       <div class="controls-grid">
-
         <div class="key-group">
           <div class="key wide">W</div>
           <div class="key wide">↑ SETA</div>
           <div class="key-desc">MOVER<br>PARA CIMA</div>
         </div>
-
         <div class="key-group">
           <div class="key wide">S</div>
           <div class="key wide">↓ SETA</div>
           <div class="key-desc">MOVER<br>PARA BAIXO</div>
         </div>
-
       </div>
     </div>
 
-    <!-- POWERUPS SECTION -->
     <div class="manual-section">
       <div class="section-label">⚡ POWER-UPS</div>
       <div class="powerups-grid">
-
         <div class="powerup-card">
-          <div class="powerup-img animated">
+          <div class="powerup-img">
             <img id="vida-img" src="./img/fase1/vida_001.png" alt="Vida">
           </div>
           <div class="powerup-name">VIDA</div>
           <div class="powerup-desc">+1 de<br>vida ao coletar</div>
         </div>
-
         <div class="powerup-card">
-          <div class="powerup-img animated">
+          <div class="powerup-img">
             <img id="boost-img" src="./img/fase1/boost_001.png" alt="Boost">
           </div>
           <div class="powerup-name">BOOST</div>
           <div class="powerup-desc">Velocidade<br>aumentada<br>por 80 frames</div>
         </div>
-
       </div>
     </div>
 
-    <!-- ENEMIES SECTION -->
     <div class="manual-section">
       <div class="section-label">👾 INIMIGOS & OBSTÁCULOS</div>
       <div class="entity-row">
-
         <div class="entity-card">
-          <div class="entity-img">
-            <img src="./img/fase1/inimigo_001.png" alt="Inimigo">
-          </div>
+          <div class="entity-img"><img src="./img/fase1/inimigo_001.png" alt="Inimigo"></div>
           <div class="entity-info">
             <div class="entity-name">INIMIGO</div>
             <div class="entity-desc">Vem da direita.<br>Colisão: -1 vida.</div>
             <span class="tag tag-danger">PERIGO</span>
           </div>
         </div>
-
         <div class="entity-card">
-          <div class="entity-img">
-            <img src="./img/fase1/carro1_001.png" alt="Carro">
-          </div>
+          <div class="entity-img"><img src="./img/fase1/carro1_001.png" alt="Carro"></div>
           <div class="entity-info">
             <div class="entity-name">CARRO</div>
             <div class="entity-desc">Mais largo.<br>Colisão: -1 vida.</div>
             <span class="tag tag-danger">PERIGO</span>
           </div>
         </div>
-
         <div class="entity-card">
-          <div class="entity-img">
-            <img src="./img/fase1/obstaculo1.png" alt="Obstáculo">
-          </div>
+          <div class="entity-img"><img src="./img/fase1/obstaculo1.png" alt="Obstáculo"></div>
           <div class="entity-info">
             <div class="entity-name">OBSTÁCULO</div>
             <div class="entity-desc">Reduz sua<br>velocidade.</div>
             <span class="tag tag-warn">LENTO</span>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- BOSS SECTION -->
     <div class="manual-section">
       <div class="section-label">💀 BOSS</div>
       <div class="entity-row">
         <div class="entity-card">
-          <div class="entity-img">
-            <img src="./img/fase1/boss1_001.png" alt="Boss">
-          </div>
+          <div class="entity-img"><img src="./img/fase1/boss1_001.png" alt="Boss"></div>
           <div class="entity-info">
             <div class="entity-name">BOSS</div>
             <div class="entity-desc">Aparece após<br>muitos pontos.<br>Colisão: -3 vidas!</div>
@@ -705,7 +1056,137 @@
   </div>
 </div>
 
-<!-- ═══════════════════ LOADING SCREEN ═══════════════════ -->
+<!-- ═══════════════════ SOBRE O CRIADOR SCREEN ═══════════════════ -->
+<div id="sobre-screen">
+  <div class="sobre-inner">
+
+    <div class="sobre-titulo">SOBRE O CRIADOR</div>
+
+    <!-- BLOCO SUPERIOR: foto rosto + dados -->
+    <div class="sobre-top">
+
+      <!-- Foto rosto quadrada -->
+      <div class="foto-rosto-wrap">
+        <div class="foto-rosto-frame">
+          <img src="./img/bellorosto.png" alt="Foto do criador"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          
+        </div>
+        <div class="foto-label">[ CRIADOR ]</div>
+      </div>
+
+      <!-- Dados do criador -->
+      <div class="sobre-dados">
+        <div class="dados-nome">BELLO</div>
+
+        <div class="dados-row">
+          <span class="dados-tag">CURSO</span>
+          <span class="dados-val">Desenvolvimento<br>de Sistemas</span>
+        </div>
+
+        <div class="dados-row">
+          <span class="dados-tag">SKILLS</span>
+          <span class="dados-val">JavaScript · HTML<br>CSS · Canvas API</span>
+        </div>
+
+        <div class="dados-row">
+          <span class="dados-tag">PROJETO</span>
+          <span class="dados-val">Jogo 2D em<br>Canvas</span>
+        </div>
+
+        <div class="dados-row">
+          <span class="dados-tag">ANO</span>
+          <span class="dados-val">2025</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFESSOR -->
+    <div class="professor-card">
+      <div class="prof-info">
+        <div class="prof-label">ORIENTADO POR</div>
+        <div class="prof-nome">Prof. Carlos Roberto da Silva Filho</div>
+        <div class="prof-materia">Disciplina: Modelagem de Sistemas</div>
+      </div>
+    </div>
+
+    <div class="sobre-mid">
+
+      <!-- Foto corpo inteiro -->
+      <div class="foto-corpo-frame">
+        <img src="./img/bellotodo.png" alt="Foto corpo inteiro"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+       
+      </div>
+
+      <div class="versiculo-card">
+        <div class="versiculo-header">✝ RECADO:</div>
+        <div class="versiculo-texto">
+          "Porque Deus tanto amou<br>
+          o mundo que deu o seu<br>
+          Filho Unigênito, para que<br>
+          todo o que nele crer<br>
+          não pereça, mas tenha<br>
+          a vida eterna."
+        </div>
+        <div class="versiculo-ref">— João 3:16</div>
+      </div>
+
+    </div>
+
+    <div class="redes-section">
+      <div class="section-label" style="color:var(--gold); border-bottom:4px solid var(--gold-dark); padding-bottom:8px; margin-bottom:20px; font-size:clamp(8px,1.5vw,11px); letter-spacing:2px;">
+        REDES SOCIAIS
+      </div>
+
+      <div class="redes-grid">
+
+        <a class="rede-btn rede-github" href="https://github.com/bellodev5" target="_blank">
+          <div class="rede-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path class="icon-github" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+          </div>
+          <div class="rede-info">
+            <div class="rede-nome">GITHUB</div>
+            <div class="rede-handle">github.com/bellodev5</div>
+          </div>
+        </a>
+
+        <!-- Instagram -->
+        <a class="rede-btn rede-insta" href="https://instagram.com/guiilherme.bello" target="_blank">
+          <div class="rede-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path class="icon-insta" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+            </svg>
+          </div>
+          <div class="rede-info">
+            <div class="rede-nome">INSTAGRAM</div>
+            <div class="rede-handle">@guiilherme.bello</div>
+          </div>
+        </a>
+
+        <!-- WhatsApp -->
+        <a class="rede-btn rede-whats" href="https://wa.me/5547991461399" target="_blank">
+          <div class="rede-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path class="icon-whats" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+            </svg>
+          </div>
+          <div class="rede-info">
+            <div class="rede-nome">WHATSAPP</div>
+            <div class="rede-handle">(47) 99146-1399</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+    <button class="sobre-back" onclick="closeSobre()">◀ VOLTAR AO MENU</button>
+
+  </div>
+</div>
+
 <div id="loading-screen">
   <div class="loading-title">CARREGANDO...</div>
   <div class="loading-tip" id="loading-tip">Desvie dos carros para sobreviver!</div>
@@ -716,7 +1197,6 @@
 </div>
 
 <script>
-  // ── CURSOR / BUTTON SELECTION ──
   const buttons = document.querySelectorAll('.menu-btn')
   const cursor = document.getElementById('cursor')
   let selectedIndex = 0
@@ -725,47 +1205,29 @@
     selectedIndex = index
     buttons.forEach((b, i) => b.classList.toggle('selected', i === index))
     const btn = buttons[index]
-    const menuList = document.querySelector('.menu-list')
-    const btnTop = btn.offsetTop + btn.offsetHeight / 2 - 10
-    cursor.style.top = btnTop + 'px'
+    cursor.style.top = (btn.offsetTop + btn.offsetHeight / 2 - 10) + 'px'
   }
 
-  // keyboard nav
   document.addEventListener('keydown', e => {
     if (document.querySelector('.overlay.active') ||
         document.getElementById('manual-screen').classList.contains('active') ||
+        document.getElementById('sobre-screen').classList.contains('active') ||
         document.getElementById('loading-screen').classList.contains('active')) return
 
-    if (e.key === 'ArrowDown' || e.key === 's') {
-      selectBtn((selectedIndex + 1) % buttons.length)
-    }
-    if (e.key === 'ArrowUp' || e.key === 'w') {
-      selectBtn((selectedIndex - 1 + buttons.length) % buttons.length)
-    }
-    if (e.key === 'Enter') {
-      buttons[selectedIndex].click()
-    }
+    if (e.key === 'ArrowDown' || e.key === 's') selectBtn((selectedIndex + 1) % buttons.length)
+    if (e.key === 'ArrowUp'   || e.key === 'w') selectBtn((selectedIndex - 1 + buttons.length) % buttons.length)
+    if (e.key === 'Enter') buttons[selectedIndex].click()
   })
 
-  // init cursor position
   selectBtn(0)
 
-  // ── MODALS ──
-  function openModal(id) {
-    document.getElementById(id).classList.add('active')
-  }
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('active')
-  }
+  function openModal(id)  { document.getElementById(id).classList.add('active') }
+  function closeModal(id) { document.getElementById(id).classList.remove('active') }
 
-  // close modal on overlay click
   document.querySelectorAll('.overlay').forEach(ov => {
-    ov.addEventListener('click', e => {
-      if (e.target === ov) ov.classList.remove('active')
-    })
+    ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('active') })
   })
 
-  // ── MANUAL ──
   function openManual() {
     closeModal('controles-modal')
     document.getElementById('manual-screen').classList.add('active')
@@ -775,24 +1237,31 @@
     document.getElementById('manual-screen').classList.remove('active')
   }
 
-  // sprite animation for power-ups (alternates _001 / _002)
+  function openSobre() {
+    document.getElementById('sobre-screen').classList.add('active')
+  }
+  function closeSobre() {
+    document.getElementById('sobre-screen').classList.remove('active')
+  }
+
+  let spriteStarted = false
   function startSpriteAnimation() {
+    if (spriteStarted) return
+    spriteStarted = true
     let frame = 1
     setInterval(() => {
       frame = frame === 1 ? 2 : 1
-      document.getElementById('vida-img').src  = `./img/fase1/vida_00${frame}.png`
-      document.getElementById('boost-img').src = `./img/fase1/boost_00${frame}.png`
+      const vi = document.getElementById('vida-img')
+      const bi = document.getElementById('boost-img')
+      if (vi) vi.src = `./img/fase1/vida_00${frame}.png`
+      if (bi) bi.src = `./img/fase1/boost_00${frame}.png`
     }, 500)
   }
 
   const tips = [
     'Desvie dos carros para sobreviver!',
     'Colete corações para recuperar vida.',
-    'O boost te deixa muito mais rápido!',
-    'Cuidado com a banana — ela te deixa lento.',
-    'Quanto mais pontos, mais difícil fica.',
-    'O boss aparece e tira 3 vidas de uma vez!',
-    'Use W ou ↑ para subir, S ou ↓ para descer.',
+    'O boost te deixa muito mais rápido!'
   ]
 
   function startLoading() {
@@ -800,24 +1269,18 @@
     const screen = document.getElementById('loading-screen')
     screen.classList.add('active')
 
-    const bar = document.getElementById('loading-bar')
-    const pct = document.getElementById('loading-pct')
-    const tipEl = document.getElementById('loading-tip')
+    const bar    = document.getElementById('loading-bar')
+    const pct    = document.getElementById('loading-pct')
+    const tipEl  = document.getElementById('loading-tip')
 
-    let progress = 0
-    let tipIndex = 0
+    let progress = 0, tipIndex = 0
 
-    // rotate tips
     const tipInterval = setInterval(() => {
       tipIndex = (tipIndex + 1) % tips.length
       tipEl.style.opacity = 0
-      setTimeout(() => {
-        tipEl.textContent = tips[tipIndex]
-        tipEl.style.opacity = 1
-      }, 300)
+      setTimeout(() => { tipEl.textContent = tips[tipIndex]; tipEl.style.opacity = 1 }, 300)
     }, 1800)
 
-    // progress bar
     const barInterval = setInterval(() => {
       progress += Math.random() * 12 + 4
       if (progress >= 100) {
@@ -826,10 +1289,7 @@
         pct.textContent = '100%'
         clearInterval(barInterval)
         clearInterval(tipInterval)
-        setTimeout(() => {
-          // REDIRECIONA PARA O JOGO
-          window.location.href = './jogo.html'
-        }, 800)
+        setTimeout(() => { window.location.href = './jogo.html' }, 800)
         return
       }
       bar.style.width = progress + '%'

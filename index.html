@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu Principal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  :root {
+    --pixel: 4px;
+    --gold: #f5c542;
+    --gold-dark: #c9992a;
+    --stone: #a0a8b0;
+    --stone-dark: #6c7480;
+    --stone-light: #d0d8e0;
+    --stone-shadow: #3a3f48;
+    --bg-overlay: rgba(0,0,0,0.55);
+    --text-dark: #1a1a2e;
+    --white: #f0f4ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Press Start 2P', monospace;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #fff;
+    image-rendering: pixelated;
+  }
+
+  /* ── BACKGROUND ── */
+  #bg {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    /* Troque por: background: url('./img/menu_bg.png') center/cover no-repeat; */
+    z-index: 0;
+  }
+
+  /* pixel checkerboard hint */
+  #bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(45deg, rgba(0,0,0,0.03) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(0,0,0,0.03) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.03) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.03) 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+  }
+
+  /* ── MAIN MENU ── */
+  #menu {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 0;
+  }
+
+  /* Title */
+  .game-title {
+    font-size: clamp(24px, 5vw, 52px);
+    color: var(--gold);
+    text-shadow:
+      4px 4px 0 var(--gold-dark),
+      8px 8px 0 #000,
+      -2px -2px 0 #000,
+      2px -2px 0 #000,
+      -2px 2px 0 #000;
+    letter-spacing: 4px;
+    margin-bottom: 48px;
+    animation: titleBounce 2s ease-in-out infinite;
+  }
+
+  @keyframes titleBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Menu item wrapper */
+  .menu-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    position: relative;
+  }
+
+  /* Cursor arrow */
+  .cursor {
+    position: absolute;
+    left: -36px;
+    font-size: 14px;
+    color: var(--gold);
+    transition: top 0.12s steps(2);
+    text-shadow: 2px 2px 0 #000;
+    pointer-events: none;
+    top: 10px;
+  }
+
+  /* Stone pixel button */
+  .menu-btn {
+    position: relative;
+    background: var(--stone);
+    border: none;
+    cursor: pointer;
+    padding: 14px 36px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 1.8vw, 14px);
+    color: var(--stone-shadow);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    image-rendering: pixelated;
+    /* pixel border illusion */
+    box-shadow:
+      inset -4px -4px 0 var(--stone-dark),
+      inset 4px 4px 0 var(--stone-light),
+      4px 4px 0 var(--stone-shadow),
+      0 0 0 4px var(--stone-shadow);
+    transition: transform 0.05s, box-shadow 0.05s;
+    min-width: 280px;
+    text-align: center;
+  }
+
+  .menu-btn:hover, .menu-btn.selected {
+    background: #b8c0cc;
+    box-shadow:
+      inset -4px -4px 0 var(--stone-dark),
+      inset 4px 4px 0 #e8f0ff,
+      4px 4px 0 var(--stone-shadow),
+      0 0 0 4px var(--stone-shadow);
+  }
+
+  .menu-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow:
+      inset 4px 4px 0 var(--stone-dark),
+      0 0 0 4px var(--stone-shadow);
+  }
+
+  /* ── OVERLAY / MODAL ── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.15s ease;
+  }
+  .overlay.active { display: flex; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: #2a3040;
+    border: 4px solid var(--stone-shadow);
+    box-shadow:
+      inset -4px -4px 0 #111,
+      inset 4px 4px 0 #4a5060,
+      8px 8px 0 #000;
+    padding: 32px 40px;
+    max-width: 520px;
+    width: 90vw;
+    color: var(--white);
+    position: relative;
+  }
+
+  .modal h2 {
+    font-size: clamp(10px, 2vw, 14px);
+    color: var(--gold);
+    text-shadow: 2px 2px 0 var(--gold-dark);
+    margin-bottom: 20px;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .modal p {
+    font-size: clamp(7px, 1.2vw, 9px);
+    line-height: 2;
+    color: #c0c8d8;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .modal-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .btn-ok, .btn-back {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(7px, 1.2vw, 10px);
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  .btn-ok {
+    background: var(--gold);
+    color: #1a1a00;
+    box-shadow: inset -3px -3px 0 var(--gold-dark), 3px 3px 0 #000, 0 0 0 3px #000;
+  }
+  .btn-ok:hover { background: #ffd84a; }
+  .btn-ok:active { transform: translate(3px,3px); box-shadow: 0 0 0 3px #000; }
+
+  .btn-back {
+    background: var(--stone);
+    color: var(--stone-shadow);
+    box-shadow: inset -3px -3px 0 var(--stone-dark), 3px 3px 0 #000, 0 0 0 3px #000;
+  }
+  .btn-back:hover { background: var(--stone-light); }
+  .btn-back:active { transform: translate(3px,3px); box-shadow: 0 0 0 3px #000; }
+
+  /* ── MANUAL ── */
+  #manual-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #1a2030;
+    z-index: 200;
+    overflow-y: auto;
+    padding: 40px 20px;
+    animation: fadeIn 0.2s ease;
+  }
+  #manual-screen.active { display: block; }
+
+  .manual-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .manual-title {
+    font-size: clamp(12px, 2.5vw, 18px);
+    color: var(--gold);
+    text-shadow: 3px 3px 0 var(--gold-dark);
+    text-align: center;
+    margin-bottom: 40px;
+    letter-spacing: 3px;
+  }
+
+  .manual-section {
+    margin-bottom: 40px;
+  }
+
+  .section-label {
+    font-size: clamp(8px, 1.5vw, 11px);
+    color: var(--gold);
+    border-bottom: 4px solid var(--gold-dark);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+  }
+
+  /* Controls display */
+  .controls-grid {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .key-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .key-row { display: flex; gap: 6px; }
+
+  .key {
+    width: 48px;
+    height: 48px;
+    background: var(--stone);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(7px, 1.2vw, 10px);
+    color: var(--stone-shadow);
+    box-shadow:
+      inset -3px -3px 0 var(--stone-dark),
+      inset 3px 3px 0 var(--stone-light),
+      3px 3px 0 #000, 0 0 0 3px #000;
+    image-rendering: pixelated;
+  }
+
+  .key.wide { width: 80px; font-size: clamp(6px, 1vw, 8px); }
+  .key.arrow { font-size: 18px; }
+
+  .key-desc {
+    font-size: clamp(6px, 1vw, 8px);
+    color: #8090a8;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  /* Powerups grid */
+  .powerups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 16px;
+  }
+
+  .powerup-card {
+    background: #2a3040;
+    border: 3px solid var(--stone-shadow);
+    box-shadow: 3px 3px 0 #000;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .powerup-img {
+    width: 48px;
+    height: 48px;
+    background: #3a4050;
+    border: 2px solid #4a5060;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .powerup-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+
+  /* animated sprite cycling */
+  .powerup-img.animated img {
+    animation: spriteFlip 0.8s steps(1) infinite;
+  }
+
+  @keyframes spriteFlip {
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
+    51%  { opacity: 1; }
+  }
+
+  .powerup-name {
+    font-size: clamp(6px, 1vw, 8px);
+    color: var(--gold);
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  .powerup-desc {
+    font-size: clamp(5px, 0.9vw, 7px);
+    color: #8090a8;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  /* Enemies / Boss row */
+  .entity-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .entity-card {
+    background: #2a3040;
+    border: 3px solid var(--stone-shadow);
+    box-shadow: 3px 3px 0 #000;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .entity-img {
+    width: 56px;
+    height: 56px;
+    background: #3a4050;
+    border: 2px solid #4a5060;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .entity-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+
+  .entity-info { flex: 1; }
+
+  .entity-name {
+    font-size: clamp(7px, 1.2vw, 9px);
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .entity-desc {
+    font-size: clamp(5px, 0.9vw, 7px);
+    color: #8090a8;
+    line-height: 1.8;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: clamp(5px, 0.8vw, 6px);
+    padding: 3px 6px;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+  .tag-danger { background: #8b0000; color: #ffaaaa; }
+  .tag-warn   { background: #7a5200; color: #ffd080; }
+  .tag-boss   { background: #4b0082; color: #e080ff; }
+
+  .manual-back {
+    display: block;
+    margin: 32px auto 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 1.3vw, 11px);
+    padding: 14px 32px;
+    background: var(--stone);
+    color: var(--stone-shadow);
+    border: none;
+    cursor: pointer;
+    box-shadow: inset -3px -3px 0 var(--stone-dark), 3px 3px 0 #000, 0 0 0 3px #000;
+    letter-spacing: 1px;
+  }
+  .manual-back:hover { background: var(--stone-light); }
+  .manual-back:active { transform: translate(3px,3px); box-shadow: 0 0 0 3px #000; }
+
+  /* ── LOADING SCREEN ── */
+  #loading-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0a0e1a;
+    z-index: 300;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    animation: fadeIn 0.3s ease;
+  }
+  #loading-screen.active { display: flex; }
+
+  .loading-title {
+    font-size: clamp(10px, 2vw, 15px);
+    color: var(--gold);
+    text-shadow: 3px 3px 0 var(--gold-dark);
+    letter-spacing: 3px;
+    animation: titleBounce 1.5s ease-in-out infinite;
+  }
+
+  .loading-tip {
+    font-size: clamp(6px, 1.1vw, 9px);
+    color: #8090a8;
+    text-align: center;
+    max-width: 480px;
+    line-height: 2.2;
+    padding: 0 20px;
+    min-height: 60px;
+    transition: opacity 0.3s;
+  }
+
+  .loading-bar-wrap {
+    width: clamp(260px, 50vw, 480px);
+    height: 24px;
+    background: #1a2030;
+    border: 3px solid var(--stone-shadow);
+    box-shadow: 3px 3px 0 #000, 0 0 0 3px #000;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .loading-bar {
+    height: 100%;
+    background: var(--gold);
+    box-shadow: inset 0 -4px 0 var(--gold-dark);
+    width: 0%;
+    transition: width 0.3s steps(8);
+  }
+
+  /* pixel scanlines on loading */
+  #loading-screen::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.08) 3px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+  }
+
+  .loading-pct {
+    font-size: clamp(8px, 1.4vw, 11px);
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  /* scanlines on menu too */
+  #menu::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND -->
+<div id="bg"></div>
+
+<!-- ═══════════════════ MAIN MENU ═══════════════════ -->
+<div id="menu">
+  <div class="game-title">GAME</div>
+
+  <div class="menu-list">
+    <div class="cursor" id="cursor">▶</div>
+
+    <button class="menu-btn selected" data-index="0" onclick="selectBtn(0); openModal('play-modal')">
+      JOGAR
+    </button>
+    <button class="menu-btn" data-index="1" onclick="selectBtn(1); openModal('controles-modal')">
+      CONTROLES
+    </button>
+    <button class="menu-btn" data-index="2" onclick="selectBtn(2); openModal('sobre-modal')">
+      SOBRE O CRIADOR
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════ MODAL: JOGAR ═══════════════════ -->
+<div class="overlay" id="play-modal">
+  <div class="modal">
+    <h2>⚔ INICIAR JOGO</h2>
+    <p>Pronto para enfrentar as ruas?<br>Boa sorte, jogador!</p>
+    <div class="modal-btns">
+      <button class="btn-ok" onclick="startLoading()">OK — JOGAR</button>
+      <button class="btn-back" onclick="closeModal('play-modal')">VOLTAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ MODAL: CONTROLES ═══════════════════ -->
+<div class="overlay" id="controles-modal">
+  <div class="modal">
+    <h2>📖 MANUAL</h2>
+    <p>Veja o guia completo de controles,<br>power-ups, inimigos e mais!</p>
+    <div class="modal-btns">
+      <button class="btn-ok" onclick="openManual()">IR PARA O MANUAL</button>
+      <button class="btn-back" onclick="closeModal('controles-modal')">VOLTAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ MODAL: SOBRE ═══════════════════ -->
+<div class="overlay" id="sobre-modal">
+  <div class="modal">
+    <h2>👤 SOBRE O CRIADOR</h2>
+    <p>Em breve...</p>
+    <div class="modal-btns">
+      <button class="btn-back" onclick="closeModal('sobre-modal')">VOLTAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ MANUAL SCREEN ═══════════════════ -->
+<div id="manual-screen">
+  <div class="manual-inner">
+    <div class="manual-title">📖 MANUAL DO JOGO</div>
+
+    <!-- CONTROLS SECTION -->
+    <div class="manual-section">
+      <div class="section-label">🎮 CONTROLES</div>
+      <div class="controls-grid">
+
+        <div class="key-group">
+          <div class="key wide">W</div>
+          <div class="key wide">↑ SETA</div>
+          <div class="key-desc">MOVER<br>PARA CIMA</div>
+        </div>
+
+        <div class="key-group">
+          <div class="key wide">S</div>
+          <div class="key wide">↓ SETA</div>
+          <div class="key-desc">MOVER<br>PARA BAIXO</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- POWERUPS SECTION -->
+    <div class="manual-section">
+      <div class="section-label">⚡ POWER-UPS</div>
+      <div class="powerups-grid">
+
+        <div class="powerup-card">
+          <div class="powerup-img animated">
+            <img id="vida-img" src="./img/fase1/vida_001.png" alt="Vida">
+          </div>
+          <div class="powerup-name">VIDA</div>
+          <div class="powerup-desc">+1 de<br>vida ao coletar</div>
+        </div>
+
+        <div class="powerup-card">
+          <div class="powerup-img animated">
+            <img id="boost-img" src="./img/fase1/boost_001.png" alt="Boost">
+          </div>
+          <div class="powerup-name">BOOST</div>
+          <div class="powerup-desc">Velocidade<br>aumentada<br>por 80 frames</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ENEMIES SECTION -->
+    <div class="manual-section">
+      <div class="section-label">👾 INIMIGOS & OBSTÁCULOS</div>
+      <div class="entity-row">
+
+        <div class="entity-card">
+          <div class="entity-img">
+            <img src="./img/fase1/inimigo_001.png" alt="Inimigo">
+          </div>
+          <div class="entity-info">
+            <div class="entity-name">INIMIGO</div>
+            <div class="entity-desc">Vem da direita.<br>Colisão: -1 vida.</div>
+            <span class="tag tag-danger">PERIGO</span>
+          </div>
+        </div>
+
+        <div class="entity-card">
+          <div class="entity-img">
+            <img src="./img/fase1/carro1_001.png" alt="Carro">
+          </div>
+          <div class="entity-info">
+            <div class="entity-name">CARRO</div>
+            <div class="entity-desc">Mais largo.<br>Colisão: -1 vida.</div>
+            <span class="tag tag-danger">PERIGO</span>
+          </div>
+        </div>
+
+        <div class="entity-card">
+          <div class="entity-img">
+            <img src="./img/fase1/obstaculo1.png" alt="Obstáculo">
+          </div>
+          <div class="entity-info">
+            <div class="entity-name">OBSTÁCULO</div>
+            <div class="entity-desc">Reduz sua<br>velocidade.</div>
+            <span class="tag tag-warn">LENTO</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOSS SECTION -->
+    <div class="manual-section">
+      <div class="section-label">💀 BOSS</div>
+      <div class="entity-row">
+        <div class="entity-card">
+          <div class="entity-img">
+            <img src="./img/fase1/boss1_001.png" alt="Boss">
+          </div>
+          <div class="entity-info">
+            <div class="entity-name">BOSS</div>
+            <div class="entity-desc">Aparece após<br>muitos pontos.<br>Colisão: -3 vidas!</div>
+            <span class="tag tag-boss">BOSS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="manual-back" onclick="closeManual()">◀ VOLTAR AO MENU</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ LOADING SCREEN ═══════════════════ -->
+<div id="loading-screen">
+  <div class="loading-title">CARREGANDO...</div>
+  <div class="loading-tip" id="loading-tip">Desvie dos carros para sobreviver!</div>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar" id="loading-bar"></div>
+  </div>
+  <div class="loading-pct" id="loading-pct">0%</div>
+</div>
+
+<script>
+  // ── CURSOR / BUTTON SELECTION ──
+  const buttons = document.querySelectorAll('.menu-btn')
+  const cursor = document.getElementById('cursor')
+  let selectedIndex = 0
+
+  function selectBtn(index) {
+    selectedIndex = index
+    buttons.forEach((b, i) => b.classList.toggle('selected', i === index))
+    const btn = buttons[index]
+    const menuList = document.querySelector('.menu-list')
+    const btnTop = btn.offsetTop + btn.offsetHeight / 2 - 10
+    cursor.style.top = btnTop + 'px'
+  }
+
+  // keyboard nav
+  document.addEventListener('keydown', e => {
+    if (document.querySelector('.overlay.active') ||
+        document.getElementById('manual-screen').classList.contains('active') ||
+        document.getElementById('loading-screen').classList.contains('active')) return
+
+    if (e.key === 'ArrowDown' || e.key === 's') {
+      selectBtn((selectedIndex + 1) % buttons.length)
+    }
+    if (e.key === 'ArrowUp' || e.key === 'w') {
+      selectBtn((selectedIndex - 1 + buttons.length) % buttons.length)
+    }
+    if (e.key === 'Enter') {
+      buttons[selectedIndex].click()
+    }
+  })
+
+  // init cursor position
+  selectBtn(0)
+
+  // ── MODALS ──
+  function openModal(id) {
+    document.getElementById(id).classList.add('active')
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active')
+  }
+
+  // close modal on overlay click
+  document.querySelectorAll('.overlay').forEach(ov => {
+    ov.addEventListener('click', e => {
+      if (e.target === ov) ov.classList.remove('active')
+    })
+  })
+
+  // ── MANUAL ──
+  function openManual() {
+    closeModal('controles-modal')
+    document.getElementById('manual-screen').classList.add('active')
+    startSpriteAnimation()
+  }
+  function closeManual() {
+    document.getElementById('manual-screen').classList.remove('active')
+  }
+
+  // sprite animation for power-ups (alternates _001 / _002)
+  function startSpriteAnimation() {
+    let frame = 1
+    setInterval(() => {
+      frame = frame === 1 ? 2 : 1
+      document.getElementById('vida-img').src  = `./img/fase1/vida_00${frame}.png`
+      document.getElementById('boost-img').src = `./img/fase1/boost_00${frame}.png`
+    }, 500)
+  }
+
+  const tips = [
+    'Desvie dos carros para sobreviver!',
+    'Colete corações para recuperar vida.',
+    'O boost te deixa muito mais rápido!',
+    'Cuidado com a banana — ela te deixa lento.',
+    'Quanto mais pontos, mais difícil fica.',
+    'O boss aparece e tira 3 vidas de uma vez!',
+    'Use W ou ↑ para subir, S ou ↓ para descer.',
+  ]
+
+  function startLoading() {
+    closeModal('play-modal')
+    const screen = document.getElementById('loading-screen')
+    screen.classList.add('active')
+
+    const bar = document.getElementById('loading-bar')
+    const pct = document.getElementById('loading-pct')
+    const tipEl = document.getElementById('loading-tip')
+
+    let progress = 0
+    let tipIndex = 0
+
+    // rotate tips
+    const tipInterval = setInterval(() => {
+      tipIndex = (tipIndex + 1) % tips.length
+      tipEl.style.opacity = 0
+      setTimeout(() => {
+        tipEl.textContent = tips[tipIndex]
+        tipEl.style.opacity = 1
+      }, 300)
+    }, 1800)
+
+    // progress bar
+    const barInterval = setInterval(() => {
+      progress += Math.random() * 12 + 4
+      if (progress >= 100) {
+        progress = 100
+        bar.style.width = '100%'
+        pct.textContent = '100%'
+        clearInterval(barInterval)
+        clearInterval(tipInterval)
+        setTimeout(() => {
+          // REDIRECIONA PARA O JOGO
+          window.location.href = './jogo.html'
+        }, 800)
+        return
+      }
+      bar.style.width = progress + '%'
+      pct.textContent = Math.floor(progress) + '%'
+    }, 280)
+  }
+</script>
+</body>
+</html>

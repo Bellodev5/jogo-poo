@@ -212,15 +212,7 @@ jogo.html?modo=2p
 
 ---
 
-## 📌 Melhorias Futuras
 
-* 🎮 Sistema de fases
-* 🌐 Multiplayer online
-* 💾 Salvamento de ranking
-* 🎨 Skins de personagem
-* 🔊 Controle de volume
-
----
 
 ## 👨‍💻 Autor
 
